@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Game;
 use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Services\PostServiceFacade;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -24,7 +26,8 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        $games = Game::all();
+        return view('posts.create', compact('games'));
     }
 
     /**
@@ -32,7 +35,21 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        //
+        $validatedData = $request->validated();
+
+        $validatedData['slug'] = Str::slug($request->input('title'));
+        //dd($validatedData);
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('images', 'public');
+            $validatedData['imageUrl'] = $imagePath;
+        }
+
+
+        //$validatedData['game_id'] = $request->input('game_id');
+
+        PostServiceFacade::storePosts($validatedData);
+
+        return redirect()->route('posts.index');
     }
 
     /**
@@ -76,5 +93,12 @@ class PostController extends Controller
         $posts = PostServiceFacade::getPersonalPosts();
 
         return view('posts.personal', compact('posts'));
+    }
+
+    public function showPostsByGame(int $game_id)
+    {
+        $posts = PostServiceFacade::getPostsByGame($game_id);
+
+        return view('posts.index', compact('posts'));
     }
 }

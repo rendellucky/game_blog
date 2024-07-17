@@ -6,6 +6,7 @@
     </x-slot>
 
     <div class="container mt-4">
+        <a href="{{ route('posts.create') }}" class="btn btn-primary btn-lg">Add post</a>
         <h1 class="my-4">Your Blog Posts</h1>
 
         @if (session('status'))
@@ -25,14 +26,6 @@
                         <img src="{{ asset('storage/' . $post->image) }}" class="img-fluid mb-3" alt="{{ $post->title }}">
                     @endif
                     <p>{{ $post->content }}</p>
-                </div>
-                <div class="card-footer">
-                    <span>{{ $post->likes->count() }} Likes</span>
-                    <form action="{{ route('like.store') }}" method="POST" class="d-inline">
-                        @csrf
-                        <input type="hidden" name="post_id" value="{{ $post->id }}">
-                        <button type="submit" class="btn btn-primary btn-sm">Like</button>
-                    </form>
                 </div>
                 <div class="card-footer">
                     <a href="{{ route('posts.edit', $post->id) }}" class="btn btn-warning btn-sm">Edit</a>
