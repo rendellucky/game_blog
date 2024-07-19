@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\LikeController;
@@ -12,12 +13,13 @@ use Illuminate\Support\Facades\Route;
 });*/
 
 
-
 Route::get('/', [PostController::class, 'index'])->name('posts.index');
 Route::post('/addLike', [LikeController::class, 'store'])->name('like.store');
 Route::post('/addComment', [CommentController::class, 'store'])->name('comment.store');
 Route::get('/games', [GameController::class, 'index'])->name('games.index');
-Route::get('/posts/{game}', [PostController::class, 'showPostsByGame'])->name('posts.game');
+Route::get('/posts/game/{game}', [PostController::class, 'showPostsByGame'])->name('posts.game');
+Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+Route::get('/posts/category/{category}', [PostController::class, 'showPostsByCategory'])->name('posts.category');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

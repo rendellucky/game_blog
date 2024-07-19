@@ -22,17 +22,26 @@
                     <p>By {{ $post->user->name }} on {{ $post->created_at->format('d M Y') }}</p>
                 </div>
                 <div class="card-body">
-                    @if ($post->image)
-                        <img src="{{ asset('storage/' . $post->image) }}" class="img-fluid mb-3" alt="{{ $post->title }}">
+                    @if ($post->imageUrl)
+                        <img src="{{ asset('storage/' . $post->imageUrl) }}" class="img-fluid mb-3"
+                             alt="{{ $post->title }}">
                     @endif
                     <p>{{ $post->content }}</p>
+                    <p><strong>Categories:</strong>
+                        @foreach($post->categories as $category)
+                            {{ $category->name}}
+                        @endforeach
+                    </p>
+                    <p><strong>Game:</strong> {{ $post->game->title}}</p>
                 </div>
                 <div class="card-footer">
                     <a href="{{ route('posts.edit', $post->id) }}" class="btn btn-warning btn-sm">Edit</a>
                     <form action="{{ route('posts.destroy', $post->id) }}" method="POST" class="d-inline">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this post?');">Delete</button>
+                        <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Are you sure you want to delete this post?');">Delete
+                        </button>
                     </form>
                 </div>
             </div>

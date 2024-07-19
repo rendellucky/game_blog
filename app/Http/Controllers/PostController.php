@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Game;
-use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\Models\Category;
+use App\Models\Game;
+use App\Models\Post;
 use App\Services\PostServiceFacade;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class PostController extends Controller
@@ -27,7 +29,8 @@ class PostController extends Controller
     public function create()
     {
         $games = Game::all();
-        return view('posts.create', compact('games'));
+        $categories = Category::all();
+        return view('posts.create', compact('games', 'categories'));
     }
 
     /**
@@ -38,16 +41,14 @@ class PostController extends Controller
         $validatedData = $request->validated();
 
         $validatedData['slug'] = Str::slug($request->input('title'));
+        $validatedData['user_id'] = Auth::id();
         //dd($validatedData);
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('images', 'public');
             $validatedData['imageUrl'] = $imagePath;
         }
 
-
-        //$validatedData['game_id'] = $request->input('game_id');
-
-        PostServiceFacade::storePosts($validatedData);
+        PostServiceFacade::storePosts($validatedData, $request->input('categories'));
 
         return redirect()->route('posts.index');
     }
@@ -65,7 +66,10 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        return view('posts.edit', compact('post'));
+        $games = Game::all();
+        $categories = Category::all();
+        $selectedCategories = $post->categories->pluck('id')->toArray();
+        return view('posts.edit', compact('post', 'categories', 'games', 'selectedCategories'));
     }
 
     /**
@@ -98,6 +102,13 @@ class PostController extends Controller
     public function showPostsByGame(int $game_id)
     {
         $posts = PostServiceFacade::getPostsByGame($game_id);
+
+        return view('posts.index', compact('posts'));
+    }
+
+    public function showPostsByCategory(int $category_id)
+    {
+        $posts = PostServiceFacade::getPostsByCategory($category_id);
 
         return view('posts.index', compact('posts'));
     }

@@ -12,7 +12,7 @@
             </a>
         </li>
         <li class="nav-item mb-2">
-            <a class="nav-link text-dark" href="#">
+            <a class="nav-link text-dark" href="{{route('categories.index')}}">
                 <i class="fas fa-hashtag"></i> Category
             </a>
         </li>
