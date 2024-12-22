@@ -18,7 +18,7 @@ jobs:
         ports:
           - 3306:3306
         env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_ROOT_PASSWORD: 
           MYSQL_DATABASE: test_database
         options: --health-cmd="mysqladmin ping --silent" --health-start-period=30s --health-timeout=10s --health-retries=3
 
