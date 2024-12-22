@@ -32,6 +32,12 @@ jobs:
       with:
         node-version: '18'
 
+    - name: Commit and push build assets
+      run: |
+        git add public/build/*
+        git commit -m "Add generated build assets"
+        git push origin master
+
     - name: Install npm dependencies
       run: |
         npm install
