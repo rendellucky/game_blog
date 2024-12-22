@@ -12,6 +12,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:5.7
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: test_database
+        options: --health-cmd="mysqladmin ping --silent" --health-start-period=30s --health-timeout=10s --health-retries=3
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -20,7 +30,7 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: 8.2
-        extensions: mbstring, pdo, bcmath, curl
+        extensions: mbstring, pdo, bcmath, curl, mysqli
         ini-values: post_max_size=256M, upload_max_filesize=256M
         coverage: none
 
@@ -50,10 +60,14 @@ jobs:
       run: |
         echo "APP_KEY=${{ secrets.APP_KEY }}" >> .env
 
-    - name: Set up SQLite database
+    - name: Set up MySQL environment variables
       run: |
-        mkdir -p database
-        touch database/database.sqlite
+        echo "DB_CONNECTION=mysql" >> .env
+        echo "DB_HOST=127.0.0.1" >> .env
+        echo "DB_PORT=3306" >> .env
+        echo "DB_DATABASE=test_database" >> .env
+        echo "DB_USERNAME=root" >> .env
+        echo "DB_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
 
     - name: Clear Laravel caches
       run: php artisan optimize:clear
