@@ -35,7 +35,8 @@ jobs:
     - name: Install npm dependencies
       run: |
         npm install
-        npm run build  # Створення маніфесту
+        npm run build
+        ls -la public/build
 
     - name: Set APP_KEY
       run: |
