@@ -18,7 +18,7 @@ jobs:
         ports:
           - 3306:3306
         env:
-          MYSQL_ROOT_PASSWORD: 
+          MYSQL_ROOT_PASSWORD: root_password
           MYSQL_DATABASE: test_database
         options: --health-cmd="mysqladmin ping --silent" --health-start-period=30s --health-timeout=10s --health-retries=3
 
@@ -67,7 +67,7 @@ jobs:
         echo "DB_PORT=3306" >> .env
         echo "DB_DATABASE=test_database" >> .env
         echo "DB_USERNAME=root" >> .env
-        echo "DB_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
+        echo "DB_PASSWORD=root_password" >> .env
 
     - name: Clear Laravel caches
       run: php artisan optimize:clear
